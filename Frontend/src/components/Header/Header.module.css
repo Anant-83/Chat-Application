@@ -1,0 +1,9 @@
+.chat-logo {
+    width: 5rem;
+}
+
+@media (max-width:600px) {
+    .chat-logo {
+        width: 3rem;
+    }
+}

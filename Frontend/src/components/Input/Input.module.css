@@ -1,0 +1,50 @@
+.input-div {
+    flex: 1;
+    background-color: #242a2e;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 0 1rem;
+    user-select: none;
+    border: 1px solid rgba(26, 25, 25, 0.827);
+    z-index: 10;
+}
+
+.input-div>input {
+    background-color: transparent;
+    color: aliceblue;
+    letter-spacing: 0.8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.1rem;
+    flex: 10;
+    border: none;
+    outline: none;
+    padding: 1rem;
+}
+
+.input-div>input::placeholder {
+    letter-spacing: 1px;
+}
+
+.input-div>input:focus {
+    outline: none;
+}
+
+@media(max-width:768px) {
+    .input-div {
+        gap: 1rem
+    }
+
+    .input-div>input {
+        background-color: transparent;
+        color: aliceblue;
+        letter-spacing: 0.5px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 1rem;
+        flex: 10;
+        border: none;
+        outline: none;
+        padding: 0.8rem;
+    }
+}

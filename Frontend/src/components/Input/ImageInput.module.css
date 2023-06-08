@@ -1,0 +1,13 @@
+.image-span {
+    transition: all 100ms;
+    border-radius: 4px;
+    padding: 0.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.image-span:hover {
+    background-color: #33393d;
+}

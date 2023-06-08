@@ -1,0 +1,7 @@
+.container-div {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    overflow-y: hidden;
+    background-color: #242a2e;
+}

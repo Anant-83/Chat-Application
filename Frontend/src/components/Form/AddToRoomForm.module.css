@@ -1,0 +1,23 @@
+.action-div {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    user-select: none;
+}
+
+.input-div {
+    display: flex;
+    gap: 1rem
+}
+
+.link {
+    margin: auto;
+    color: blue;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    width: fit-content;
+    background: transparent;
+}
