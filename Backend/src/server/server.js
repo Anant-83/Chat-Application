@@ -28,6 +28,10 @@ const ADMIN_ID = "I_AM_ADMIN";
 const mp = new Map();
 const pairs = new Map();
 const groupmsg = new Map();
+const {usersInRoom,users} = require('../utils/user');
+const us_rm = new Map();
+
+const block = new Map();
 app.post('/Msg', (req, res) => {
   // const userId = req.body; // Retrieve the 'id' parameter from the query string
   // console.log("-> " + req.body.userId);
@@ -38,6 +42,52 @@ app.post('/Msg', (req, res) => {
 app.post('/GroupMsg', (req, res) => {
   res.send(groupmsg.get(req.body.roomname));
 });  
+
+app.post('/Get_List', (req,res) => {
+  console.log("Req...");
+  console.log(req.body.userId);
+  console.log(us_rm);
+  const us = users.get(req.body.userId);
+  res.send(us_rm.get(us.room));
+})
+
+app.post('/blockUser',(req,res) => {
+  const blockid = req.body.blockid;
+  const who = req.body.userId;
+  let st = new Set();
+  if(!block.has(who))
+  block.set(who,st);
+  st = block.get(who);
+  console.log("block");
+  console.log(who);
+  console.log(blockid);
+  console.log(st);
+  st.add(blockid);
+  console.log(st);
+  block.set(who,st);
+  console.log(block);
+  res.send("blocked..");
+});
+app.post('/unblockUser',(req,res) => {
+  const blockid = req.body.blockid;
+  const who = req.body.userId;
+  let st = block.get(who);
+  st.delete(blockid);
+  block.set(who,st);
+  console.log("Unblock");
+  console.log(block);
+  res.send("Unblocked..");
+  
+});
+app.post('/getBlock', (req,res) => {
+  console.log(req.body.reqid);
+  const st = block.get(req.body.reqid);
+  const arr = [];
+  for (const value of st) {
+    arr.push(value);
+  }
+  res.send(arr)
+})
 app.post('/Findroom', (req, res) => {
   // const userId = req.body; // Retrieve the 'id' parameter from the query string
   const {user1,user2,curroom} = req.body;
@@ -62,7 +112,7 @@ app.post('/Findroom', (req, res) => {
   pairs.set(req.body.user1,[]);
   if(!pairs.has(req.body.user2))
   pairs.set(req.body.user2,[]);
-
+ 
   const det1 = {
     name : req.body.user2,
     roomname : req.body.curroom
@@ -75,6 +125,22 @@ app.post('/Findroom', (req, res) => {
   pairs.get(req.body.user2).push(det2);
   res.send("Not Found");
 });
+
+app.post("/Isthere",(req,res) => {
+  const roomname = req.body.roomname;
+  const arr = us_rm.get(roomname);
+  if(!arr)
+  res.send("0");
+  for(let i = 0; i < arr.length; i++)
+  {
+    if(arr[i] == req.body.usname)
+    {
+      res.send("1");
+    }
+  }
+  res.send("0");
+})
+
 io.on("connection", (socket) => {
 
 
@@ -93,10 +159,18 @@ io.on("connection", (socket) => {
       ...data,
     });
     availableRooms();
-
+    console.log(usersInRoom);
+    console.log(users);
     if (error) {
       return callback(error);
     }
+
+    const room_name = user.room;
+    if(!us_rm.has(room_name))
+    us_rm.set(room_name,[]);
+
+    us_rm.get(room_name).push(user);
+    console.log(us_rm);
     // Creates vertual connection between users in the same room
     socket.join(user.room);
    
@@ -228,8 +302,25 @@ io.on("connection", (socket) => {
     callback();
   });
 
+  socket.on('file-upload', (data) => {
+    const file = data.file;
+    io.emit('file-received', { file: file});
+  });
   // Leave room or refreash the page
   socket.on("disconnect", () => {
+    console.log("Leaving");
+    const dta = getUser(socket.id);
+    const arr = us_rm.get(dta.room);
+    for(let i = 0; i<arr.length; i++)
+    {
+      if(arr[i].id == socket.id)
+      {
+        arr.splice(i,1);
+        break;
+      }
+    }
+    us_rm.set(dta.room,arr);
+    console.log(arr);
     const user = removeUser(socket.id);
     if (user) {
       io.to(user.room).emit(
@@ -245,8 +336,17 @@ io.on("connection", (socket) => {
         usersInRoom: getUsersInRoom(user.room),
       });
     }
+    else
+    {
+      mp = new Map();
+      pairs = new Map();
+      groupmsg = new Map();
+      us_rm = new Map();
+    }
   });
 });
-server.listen(8000, () => {
-  console.log("SERVER RUNNING ON PORT 8000...");
+
+const port = process.env.port || 8000;
+server.listen(port, () => {
+  console.log(`SERVER RUNNING ON PORT ${port}...`);
 });
