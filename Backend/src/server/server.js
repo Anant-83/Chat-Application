@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ origin: "http://localhost:3000" }));
 const server = http.createServer(app);
 const io = socketio(server);
-// require("../app");
+// require("../app");    
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(interestsRouter);
 const {
@@ -49,7 +49,10 @@ app.post('/Get_List', (req,res) => {
   console.log(us_rm);
   const us = users.get(req.body.userId);
   res.send(us_rm.get(us.room));
-})
+})   
+
+
+
 
 app.post('/blockUser',(req,res) => {
   const blockid = req.body.blockid;
