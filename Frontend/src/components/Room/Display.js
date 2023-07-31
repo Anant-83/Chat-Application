@@ -15,7 +15,7 @@ const Display = (props) => {
 
           const classNames = `${classes["text-div"]} ${
             personalUI ? classes["personal-box"] : classes["others-box"]
-          }
+          }                     
             ${
               (index == 0 || data.id !== prevId) &&
               (personalUI
